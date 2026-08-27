@@ -6,7 +6,291 @@
 .half{position:absolute;bottom:62px;width:39px;height:68px;background:#ef4960;border:6px solid #1c873f;opacity:0;z-index:7}.hl{border-radius:60px 4px 4px 60px}.hr{border-radius:4px 60px 60px 4px}#fx{position:absolute;inset:0;pointer-events:none;z-index:9}.bit{position:absolute;width:10px;height:10px;background:#ef4960;border-radius:50%;animation:fly .7s forwards}@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(500deg);opacity:0}}
 #phone{position:absolute;bottom:55px;width:32px;height:54px;background:#222;border:3px solid #111;border-radius:7px;opacity:0;transform:translateX(-50%)}#phone:after{content:"";position:absolute;inset:5px;background:#9bd7ee}#phone.crack:after{background:linear-gradient(45deg,transparent 46%,#222 47% 52%,transparent 53%),linear-gradient(-35deg,transparent 46%,#222 47% 51%,transparent 52%),#9bd7ee}#p.cry{animation:fall .6s forwards}@keyframes fall{to{transform:translateX(-50%) translateY(55px) rotate(12deg)}}#tear{position:absolute;left:34px;top:31px;font-size:24px;opacity:0}#p.cry #tear{opacity:1}
 .controls{position:absolute;bottom:0;left:0;right:0;min-height:115px;padding:12px 14px calc(14px + env(safe-area-inset-bottom));background:#fff9;display:grid;grid-template-columns:1fr 1fr;gap:9px;z-index:20}button{border:0;border-radius:15px;padding:14px;font-size:17px;font-weight:900;box-shadow:0 4px #0002}.hit{grid-column:1/-1;background:#ef553f;color:#fff;font-size:24px}.share{background:#111;color:#fff}.quit{background:#fff;border:2px solid #ccc}.retry{grid-column:1/-1;background:#f2c44d}.dn{display:none!important}.ov{position:absolute;inset:0;background:#0009;z-index:50;display:flex;align-items:center;justify-content:center;padding:22px}.card{background:#fff;border-radius:22px;padding:23px;text-align:center;width:100%;box-shadow:0 18px 50px #0005}.card h1{margin:0 0 8px}.card p{line-height:1.65}.card button{width:100%;background:#ef553f;color:#fff}#rs{font-size:46px;font-weight:1000}
-</style></head><body><div id="g"><header><div>🍉 目隠しスイカ割り</div><div class="hud">ROUND <span id="r">1</span>/3　<span id="s">0</span>点</div></header><div id="stage"><div class="sun"></div><div class="bar"><div id="time"></div></div><div id="call"></div><div id="msg" class="msg"></div><div id="previewMelons"></div><div id="melon"></div><div id="hl" class="half hl"></div><div id="hr" class="half hr"></div><div id="phone"></div><div id="p"><div class="head"></div><div class="blind"></div><div class="body"></div><div class="arm a"></div><div class="arm b"></div><div class="leg a"></div><div class="leg b"></div><div id="stick"></div><div id="tear">💧💧</div></div><div id="fx"></div></div><div class="controls"><button id="hit" class="hit dn">振り下ろす！</button><button id="share" class="share dn">𝕏 で結果をシェア</button><button id="quit" class="quit dn">やめる</button><button id="retry" class="retry dn">もう一度遊ぶ</button></div><div id="intro" class="ov"><div class="card"><h1>🍉 目隠しスイカ割り</h1><p>最初に<b>3〜4個のスイカ候補</b>が出ます。<br>ゲームが始まると全部消えます。<br><b>「右！」「左！」</b>の掛け声だけを頼りに、本物の位置を当てろ！</p><p>3ラウンド・約15秒勝負</p><button id="start">挑戦する</button></div></div><div id="result" class="ov dn"><div class="card"><h1 id="rt"></h1><div id="rs"></div><p id="rx"></p><button id="close">閉じる</button></div></div></div>
+
+/* ===== v4 FINAL ROUND CUT-IN ===== */
+#finalCut{position:absolute;inset:0;z-index:90;background:#150300;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#finalCut.dn{display:none!important}
+.firebg{position:absolute;inset:-20%;background:
+ radial-gradient(ellipse at 20% 100%,#ffdf42 0 5%,#ff6a00 6% 14%,transparent 15%),
+ radial-gradient(ellipse at 45% 100%,#fff04d 0 5%,#ff4b00 6% 17%,transparent 18%),
+ radial-gradient(ellipse at 72% 100%,#ffda37 0 6%,#f32d00 7% 18%,transparent 19%),
+ radial-gradient(ellipse at 90% 100%,#ffe24c 0 5%,#ff5a00 6% 16%,transparent 17%),
+ linear-gradient(#240000,#7d0d00 65%,#ff5a00);
+ animation:fireMove .22s infinite alternate;filter:saturate(1.35)}
+@keyframes fireMove{to{transform:translateY(-9px) scale(1.03)}}
+.vsWrap{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:space-around;padding:0 5%;z-index:2}
+.faceCut,.melonCut{width:39%;aspect-ratio:1/1;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.faceCut{background:#f5f5f5;border:7px solid #171717;box-shadow:0 0 25px #fff8}
+.faceCut:before{content:"";position:absolute;left:-8%;right:-8%;top:40%;height:20%;background:#111;border-radius:20px;transform:rotate(-3deg)}
+.faceCut.fireEyes:after{content:"🔥  🔥";position:absolute;top:32%;font-size:clamp(28px,8vw,48px);filter:drop-shadow(0 0 8px #ff0)}
+.faceCut.blue{background:#9bc5d7;box-shadow:0 0 30px #6ce8ff}
+.faceCut.blue:after{content:"💧";position:absolute;right:13%;top:22%;font-size:35px}
+.faceMouth{position:absolute;bottom:22%;width:28%;height:9%;border-bottom:6px solid #222;border-radius:50%}
+.melonCut{background:repeating-linear-gradient(100deg,#2ea856 0 15px,#126d37 15px 26px);border:7px solid #0b5829;box-shadow:0 0 30px #fff7}
+.melonCut.scratch:after{content:"";position:absolute;width:36%;height:3px;background:#f0d1a0;transform:rotate(-32deg);box-shadow:0 8px #71361f}
+.melonCut.cracked:after{content:"⚡";position:absolute;font-size:clamp(60px,16vw,105px);color:#3b0a00;filter:drop-shadow(0 0 5px #ff5b32)}
+.melonCut.steel{background:repeating-linear-gradient(105deg,#555 0 14px,#aeb8c0 14px 25px,#41484d 25px 34px);border-color:#222;box-shadow:inset -18px -18px 25px #0007,inset 15px 10px 20px #fff8,0 0 30px #e8fbff}
+.vsText{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-7deg);font-size:clamp(65px,20vw,125px);font-weight:1000;font-style:italic;color:#fff;text-shadow:5px 5px #000,0 0 18px #ff3b00;z-index:5}
+.finalWords{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:7;font-size:clamp(42px,12vw,76px);font-weight:1000;text-align:center;color:#ffd43b;text-shadow:5px 5px #000,0 0 18px #ff2b00;opacity:0;transform:scale(2.2) rotate(-5deg)}
+.finalWords.go{animation:finalPop .72s forwards}
+@keyframes finalPop{0%{opacity:0;transform:scale(2.2) rotate(-5deg)}25%{opacity:1;transform:scale(.9) rotate(-5deg)}65%{opacity:1;transform:scale(1.05) rotate(-5deg)}100%{opacity:0;transform:scale(1.45) rotate(-5deg)}}
+
+/* ===== 3-MISS CINEMATIC ===== */
+#missCinema{position:absolute;inset:0;z-index:110;background:transparent;pointer-events:none}
+#missCinema.dn{display:none!important}
+.cineFace{position:absolute;inset:0;background:#f7f7f7;display:flex;align-items:center;justify-content:center;opacity:0}
+.bigHead{width:min(72vw,350px);aspect-ratio:1;border-radius:50%;background:#eee;border:10px solid #111;position:relative}
+.bigHead:before{content:"";position:absolute;left:-7%;right:-7%;top:38%;height:21%;background:#111;border-radius:25px}
+.bigHead:after{content:"😰";position:absolute;left:50%;bottom:8%;transform:translateX(-50%);font-size:55px}
+.sokoda{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(52px,16vw,95px);font-weight:1000;color:#d41900;text-shadow:4px 4px #fff,7px 7px #111;opacity:0}
+.blackout{position:absolute;inset:0;background:#000;opacity:0}
+.impact{position:absolute;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(65px,20vw,120px);font-weight:1000;color:#111;text-shadow:5px 5px #e32612;opacity:0}
+#p.slowSwing #stick{transition:transform .8s cubic-bezier(.15,.65,.2,1);transform:rotate(75deg)}
+
+
+/* ===== v5 SIMPLE STICKMAN ===== */
+#p{width:92px;height:190px}
+#p .head{
+  left:28px;top:4px;width:38px;height:38px;
+  background:#fff;border:5px solid #111;border-radius:50%;
+}
+#p .blind{
+  left:23px;top:17px;width:48px;height:9px;
+  background:#111;border:0;border-radius:6px;transform:none;
+}
+#p .body{
+  left:44px;top:40px;width:5px;height:70px;
+  background:#111;border:0;border-radius:4px;
+}
+#p .arm,#p .leg{
+  width:5px;background:#111;border:0;border-radius:4px;
+  transform-origin:50% 3px;
+}
+#p .arm{height:62px;top:47px}
+#p .arm.a{left:43px;transform:rotate(43deg)}
+#p .arm.b{right:43px;transform:rotate(-43deg)}
+#p .leg{height:72px;top:105px}
+#p .leg.a{left:43px;transform:rotate(24deg)}
+#p .leg.b{left:46px;transform:rotate(-24deg)}
+#stick{
+  left:45px;top:-53px;width:7px;height:158px;
+  background:#805126;border:2px solid #40270f;border-radius:4px;
+  transform-origin:50% 149px;transform:rotate(-18deg);
+}
+#p.swing #stick{transform:rotate(75deg)}
+#p.slowSwing #stick{transition:transform .8s cubic-bezier(.15,.65,.2,1);transform:rotate(75deg)}
+#tear{left:32px;top:30px}
+
+/* Cut-in face is also simplified to match the in-game stickman. */
+.faceCut{background:#fff;border:8px solid #111}
+.faceCut:before{top:42%;height:12%;background:#111}
+.faceMouth{bottom:23%;width:24%;height:8%;border-bottom:6px solid #111}
+.faceCut.blue{background:#a9d7e8}
+
+
+/* ===== v6 STORYBOARD-MATCHED CUT-INS ===== */
+#finalCut{
+  background:#120000;
+  font-family:Impact,"Arial Black","Yu Gothic",sans-serif;
+}
+#finalCut .firebg{
+  inset:-10%;
+  background:
+    radial-gradient(circle at 12% 90%,#fff35c 0 3%,#ff7b00 4% 8%,transparent 9%),
+    radial-gradient(circle at 30% 100%,#ffd72b 0 4%,#ff4a00 5% 11%,transparent 12%),
+    radial-gradient(circle at 52% 92%,#fff04a 0 4%,#f33100 5% 12%,transparent 13%),
+    radial-gradient(circle at 76% 100%,#ffd92e 0 4%,#ff5100 5% 12%,transparent 13%),
+    radial-gradient(circle at 94% 92%,#ffe74c 0 4%,#f53700 5% 12%,transparent 13%),
+    linear-gradient(#180000,#6b0500 56%,#ff2d00);
+  filter:saturate(1.55) contrast(1.1);
+  animation:flamePulse .18s infinite alternate;
+}
+@keyframes flamePulse{to{transform:translateY(-7px) scale(1.025)}}
+
+#finalCut.blueMood .firebg{
+  background:
+    radial-gradient(circle at 18% 90%,#8b53ff 0 4%,#3b1f76 5% 13%,transparent 14%),
+    radial-gradient(circle at 46% 100%,#5c39c8 0 4%,#1a174c 5% 14%,transparent 15%),
+    radial-gradient(circle at 78% 92%,#7a4be6 0 4%,#1d174f 5% 13%,transparent 14%),
+    linear-gradient(#090d2d,#171048 60%,#3d2179);
+}
+
+.vsWrap{
+  padding:0 4%;
+  gap:4%;
+}
+.faceCut,.melonCut{
+  width:41%;
+  max-width:210px;
+}
+.faceCut{
+  transform:translateX(-8px);
+}
+.melonCut{
+  transform:translateX(8px);
+}
+.vsText{
+  font-size:clamp(64px,22vw,130px);
+  -webkit-text-stroke:2px #111;
+  color:#fff;
+  text-shadow:
+    4px 4px 0 #111,
+    -2px -2px 0 #111,
+    0 0 15px #ff1a00;
+}
+.faceCut.fireEyes:after{
+  content:"🔥  🔥";
+  top:30%;
+  font-size:clamp(30px,9vw,54px);
+}
+.faceCut.blue{
+  background:linear-gradient(#88b8d3,#c9e4ef);
+  border-color:#15263c;
+  box-shadow:0 0 30px #6bdcff;
+}
+.faceCut.blue:after{
+  content:"💧  💧";
+  top:17%;
+  right:5%;
+  font-size:30px;
+}
+.melonCut.cracked:before,
+.melonCut.cracked:after{
+  content:"";
+  position:absolute;
+  width:7px;
+  height:75%;
+  left:50%;
+  top:10%;
+  background:#3c110a;
+  box-shadow:0 0 5px #ff4d1c;
+  transform-origin:center;
+}
+.melonCut.cracked:before{transform:rotate(18deg)}
+.melonCut.cracked:after{transform:rotate(-22deg)}
+.melonCut.scratch:after{
+  width:38%;height:5px;
+  background:#67190d;
+  box-shadow:0 0 4px #f2a377;
+}
+.melonCut.steel{
+  background:
+    radial-gradient(circle at 35% 25%,#f7fbff 0 6%,transparent 7%),
+    repeating-linear-gradient(90deg,#3b4248 0 13px,#939da4 13px 25px,#4e565c 25px 37px);
+  border-color:#20262a;
+  box-shadow:
+    inset 15px 10px 20px #fff9,
+    inset -16px -14px 22px #0008,
+    0 0 30px #d7f5ff;
+}
+.melonCut.steel:after{
+  content:"";
+  position:absolute;inset:13%;
+  border:2px solid #dce5ea;
+  border-radius:50%;
+  box-shadow:
+    0 -32px 0 -29px #dce5ea,
+    28px -12px 0 -26px #dce5ea,
+    -28px 12px 0 -26px #dce5ea,
+    20px 27px 0 -26px #dce5ea;
+}
+
+.finalWords{
+  color:#ffbe1f;
+  -webkit-text-stroke:3px #111;
+  text-shadow:
+    5px 5px 0 #111,
+    -3px -3px 0 #111,
+    0 0 12px #ff2600;
+  letter-spacing:-0.05em;
+  line-height:.95;
+}
+.finalWords.go{animation:finalPop2 .72s forwards}
+@keyframes finalPop2{
+  0%{opacity:0;transform:scale(2.2) rotate(-5deg)}
+  18%{opacity:1;transform:scale(.84) rotate(-5deg)}
+  50%{opacity:1;transform:scale(1.04) rotate(-5deg)}
+  100%{opacity:0;transform:scale(1.35) rotate(-5deg)}
+}
+
+/* comic-speed-lines close-up */
+.cineFace{
+  background:
+    repeating-conic-gradient(from 0deg,#111 0deg 1deg,#f5f5f5 1deg 5deg);
+}
+.bigHead{
+  background:#f5f5f5;
+  box-shadow:0 0 0 12px #fff;
+}
+.bigHead:before{
+  left:-9%;right:-9%;top:39%;height:18%;
+}
+.bigHead:after{
+  content:"";
+  position:absolute;
+  left:50%;bottom:17%;
+  width:34%;height:15%;
+  transform:translateX(-50%);
+  border:6px solid #111;
+  border-top:0;
+  border-radius:0 0 60px 60px;
+}
+.bigHead .sweat{display:none}
+
+.sokoda{
+  color:#d01300;
+  -webkit-text-stroke:2px #111;
+  text-shadow:
+    4px 4px 0 #fff,
+    8px 8px 0 #111;
+  transform:rotate(-5deg);
+}
+.impact{
+  background:
+    repeating-conic-gradient(from 0deg,#111 0 1deg,#fff 1deg 6deg);
+  color:#160000;
+  -webkit-text-stroke:2px #fff;
+  text-shadow:6px 6px 0 #d11a00;
+}
+
+/* final broken-phone pose */
+#p.lookPhone{
+  transform:translateX(-50%) translateY(35px) rotate(7deg);
+}
+#p.lookPhone .arm.a{transform:rotate(76deg)}
+#p.lookPhone .arm.b{transform:rotate(-76deg)}
+#p.lookPhone .leg.a{transform:rotate(55deg)}
+#p.lookPhone .leg.b{transform:rotate(-55deg)}
+
+#p.cry{
+  animation:fallKnees .65s forwards;
+}
+@keyframes fallKnees{
+  to{transform:translateX(-50%) translateY(58px) rotate(5deg) scaleY(.92)}
+}
+
+/* make impact phone bigger for readability */
+#phone{
+  width:40px;height:66px;
+}
+
+</style></head><body><div id="g"><header><div>🍉 目隠しスイカ割り <small style="font-size:10px;opacity:.55">v7</small></div><div class="hud">ROUND <span id="r">1</span>/3　<span id="s">0</span>点</div></header><div id="stage"><div class="sun"></div><div class="bar"><div id="time"></div></div><div id="call"></div><div id="msg" class="msg"></div><div id="previewMelons"></div><div id="melon"></div><div id="hl" class="half hl"></div><div id="hr" class="half hr"></div><div id="phone"></div><div id="p"><div class="head"></div><div class="blind"></div><div class="body"></div><div class="arm a"></div><div class="arm b"></div><div class="leg a"></div><div class="leg b"></div><div id="stick"></div><div id="tear">💧💧</div></div><div id="fx"></div></div><div class="controls"><button id="hit" class="hit dn">振り下ろす！</button><button id="share" class="share dn">𝕏 で結果をシェア</button><button id="quit" class="quit dn">やめる</button><button id="retry" class="retry dn">もう一度遊ぶ</button></div>
+<div id="finalCut" class="dn">
+  <div class="firebg"></div>
+  <div id="vsScene" class="vsWrap">
+    <div id="cutFace" class="faceCut"><div class="faceMouth"></div></div>
+    <div class="vsText">VS</div>
+    <div id="cutMelon" class="melonCut"></div>
+  </div>
+  <div id="finalWords" class="finalWords">ファイナル<br>ラウンド</div>
+</div>
+<div id="missCinema" class="dn">
+  <div id="cineFace" class="cineFace"><div class="bigHead"></div></div>
+  <div id="sokoda" class="sokoda">そこだァ！！</div>
+  <div id="impact" class="impact">バキィ!!</div>
+  <div id="blackout" class="blackout"></div>
+</div>
+<div id="intro" class="ov"><div class="card"><h1>🍉 目隠しスイカ割り</h1><p>最初に<b>3〜4個のスイカ候補</b>が出ます。<br>ゲームが始まると全部消えます。<br><b>「右！」「左！」</b>の掛け声だけを頼りに、本物の位置を当てろ！</p><p>3ラウンド・約15秒勝負<br><small>3ラウンド目は特別カットイン！</small></p><button id="start">挑戦する</button></div></div><div id="result" class="ov dn"><div class="card"><h1 id="rt"></h1><div id="rs"></div><p id="rx"></p><button id="close">閉じる</button></div></div></div>
 
 <script>
 (()=>{
@@ -15,7 +299,7 @@ p=$('p'),m=$('melon'),preview=$('previewMelons'),msg=$('msg'),call=$('call'),
 time=$('time'),hit=$('hit'),share=$('share'),quit=$('quit'),retry=$('retry'),
 res=$('result'),phone=$('phone'),hl=$('hl'),hr=$('hr'),fx=$('fx');
 
-let px=8,mx=70,dir=1,speed=.24,round=1,total=0,streak=0,run=0,busy=0,
+let px=8,mx=70,dir=1,speed=.24,round=1,total=0,streak=0,successes=0,run=0,busy=0,
 t0=0,last=0,raf,ct,speedTimer;
 const dur=5000;
 const R=(a,b)=>a+Math.random()*(b-a);
@@ -102,7 +386,50 @@ function shout(){
   ct=setTimeout(shout,R(520,900));
 }
 
+
+function finalRoundCutin(done){
+  const fc=$('finalCut'),face=$('cutFace'),cm=$('cutMelon'),words=$('finalWords'),vs=$('vsScene');
+  face.className='faceCut';
+  cm.className='melonCut';
+  fc.classList.remove('blueMood');
+
+  if(successes>=2){
+    face.classList.add('fireEyes');
+    cm.classList.add('cracked');
+  }else if(successes===1){
+    cm.classList.add('scratch');
+  }else{
+    face.classList.add('blue');
+    cm.classList.add('steel');
+    fc.classList.add('blueMood');
+  }
+
+  words.classList.remove('go');
+  vs.style.opacity='1';
+  fc.classList.remove('dn');
+
+  // VS first, then FINAL ROUND about 0.5 sec later.
+  setTimeout(()=>{
+    vs.style.opacity='.18';
+    void words.offsetWidth;
+    words.classList.add('go');
+  },500);
+
+  setTimeout(()=>{
+    fc.classList.add('dn');
+    vs.style.opacity='1';
+    done();
+  },1250);
+}
+
 function begin(){
+  if(round===3){
+    finalRoundCutin(()=>beginRoundCore());
+    return;
+  }
+  beginRoundCore();
+}
+function beginRoundCore(){
   clean();
   $('r').textContent=round;
 
@@ -196,34 +523,50 @@ function strike(timeout=0){
   clearTimeout(ct);
   clearTimeout(speedTimer);
   hit.disabled=true;
+
+  const dist=Math.abs(px-mx);
+  let pts=0,title='',sub='',fail=1,perfect=0;
+
+  if(!timeout&&dist<=2.8){
+    pts=1000;
+    title='💥 粉砕！！';
+    sub='ど真ん中！ +1000';
+    fail=0;
+    perfect=1;
+  }else if(!timeout&&dist<=6.5){
+    pts=650;
+    title='🍉 命中！';
+    sub='いい一撃！ +650';
+    fail=0;
+  }else if(!timeout&&dist<=11){
+    pts=250;
+    title='😆 惜しい！';
+    sub='あと少し！ +250';
+  }else{
+    title=timeout?'⏰ 時間切れ！':'💨 空振り！';
+    sub='MISS +0';
+  }
+
+  // FINAL ROUNDは成功・失敗に関係なく共通カットイン
+  if(round===3){
+    finalStrikeCinematic(()=>{
+      resolveRound3Result({pts,title,sub,fail,perfect});
+    });
+    return;
+  }
+
+  // 1・2ラウンドは従来通り
   p.classList.add('swing');
 
   setTimeout(()=>{
-    const dist=Math.abs(px-mx);
-    let pts=0,title='',sub='',fail=1;
-
-    // 判定後だけ正解スイカを表示
     m.classList.remove('hide');
 
-    if(!timeout&&dist<=2.8){
-      pts=1000;
-      title='💥 粉砕！！';
-      sub='ど真ん中！ +1000';
-      fail=0;
+    if(perfect){
+      successes++;
       burst();
       m.classList.add('hide');
-    }else if(!timeout&&dist<=6.5){
-      pts=650;
-      title='🍉 命中！';
-      sub='いい一撃！ +650';
-      fail=0;
-    }else if(!timeout&&dist<=11){
-      pts=250;
-      title='😆 惜しい！';
-      sub='あと少し！ +250';
-    }else{
-      title=timeout?'⏰ 時間切れ！':'💨 空振り！';
-      sub='MISS +0';
+    }else if(!fail){
+      successes++;
     }
 
     total+=pts;
@@ -232,38 +575,134 @@ function strike(timeout=0){
     msg.innerHTML=title+'<small>'+sub+'</small>';
 
     setTimeout(()=>{
-      if(round===3){
-        if(fail&&streak>=3)disaster();
-        else finish();
-      }else{
-        round++;
-        begin();
-      }
+      round++;
+      begin();
     },900);
   },130);
 }
 
-function disaster(){
-  msg.innerHTML='😱 あっ！！<small>そこ、スイカじゃない！</small>';
-  m.classList.add('hide');
-  phone.style.opacity=1;
-  phone.style.left=px+'%';
-  p.classList.remove('swing');
+function finalStrikeCinematic(done){
+  const cine=$('missCinema'),
+        cf=$('cineFace'),
+        sk=$('sokoda'),
+        impact=$('impact'),
+        black=$('blackout');
 
-  setTimeout(()=>p.classList.add('swing'),280);
+  share.classList.add('dn');
+  quit.classList.add('dn');
+
+  // ① スロー振り下ろし
+  msg.innerHTML='……！<small>最後の一撃</small>';
+  p.classList.remove('swing','cry','lookPhone');
+  p.classList.add('slowSwing');
 
   setTimeout(()=>{
-    phone.classList.add('crack');
-    if(navigator.vibrate)navigator.vibrate([100,40,180]);
-    msg.innerHTML='📱 バキッ……<small>自分のスマホだった。</small>';
+    // ② 顔アップ
+    cine.classList.remove('dn');
+    cf.style.opacity='1';
 
     setTimeout(()=>{
-      p.classList.remove('swing');
-      p.classList.add('cry');
-      msg.innerHTML='😭 うわあああ……<small>割れた画面を前に泣き崩れた</small>';
-      setTimeout(finish,1400);
-    },750);
-  },500);
+      // ③ そこだァ!!
+      sk.style.opacity='1';
+
+      setTimeout(()=>{
+        sk.style.opacity='0';
+        cf.style.opacity='0';
+
+        // ④ バキィ!!
+        impact.style.opacity='1';
+        if(navigator.vibrate)navigator.vibrate([140,45,220]);
+
+        setTimeout(()=>{
+          impact.style.opacity='0';
+
+          // ⑤ 暗転
+          black.style.transition='opacity .15s';
+          black.style.opacity='1';
+
+          setTimeout(()=>{
+            // 暗転状態のまま結果処理へ
+            done();
+          },650);
+        },420);
+      },560);
+    },520);
+  },760);
+}
+
+function resolveRound3Result(resultData){
+  const {pts,title,sub,fail,perfect}=resultData;
+  const cine=$('missCinema'),
+        black=$('blackout');
+
+  total+=pts;
+  $('s').textContent=total;
+  streak=fail?streak+1:0;
+  if(!fail)successes++;
+
+  // 結果表示用に棒人間のスロー状態を解除
+  p.classList.remove('slowSwing');
+
+  // 成功系：暗転明けにスイカの結果を見せる
+  if(!fail){
+    m.classList.remove('hide');
+
+    if(perfect){
+      burst();
+      m.classList.add('hide');
+    }
+
+    black.style.opacity='0';
+
+    setTimeout(()=>{
+      cine.classList.add('dn');
+      msg.innerHTML=title+'<small>'+sub+'</small>';
+
+      setTimeout(finish,1200);
+    },180);
+
+    return;
+  }
+
+  // 失敗系
+  // 3連続失敗なら、暗転明けで割れたスマホを見る演出へ
+  if(streak>=3){
+    phone.style.opacity=1;
+    phone.style.left=px+'%';
+    phone.classList.add('crack');
+
+    black.style.opacity='0';
+
+    setTimeout(()=>{
+      cine.classList.add('dn');
+      p.classList.add('lookPhone');
+      msg.innerHTML='…………<small>割れたスマホを見つめる</small>';
+
+      setTimeout(()=>{
+        p.classList.remove('lookPhone');
+        p.classList.add('cry');
+        msg.innerHTML='😭 うわあああ……<small>膝から崩れ落ちた</small>';
+
+        setTimeout(finish,1600);
+      },1050);
+    },180);
+
+    return;
+  }
+
+  // 3連続失敗でない普通の失敗
+  m.classList.remove('hide');
+  black.style.opacity='0';
+
+  setTimeout(()=>{
+    cine.classList.add('dn');
+    msg.innerHTML=title+'<small>'+sub+'</small>';
+    setTimeout(finish,1200);
+  },180);
+}
+
+function disaster(){
+  // v7ではFINAL ROUNDの失敗分岐はresolveRound3Result()内で処理
 }
 
 function finish(){
@@ -291,6 +730,7 @@ function restart(){
   round=1;
   total=0;
   streak=0;
+  successes=0;
   $('s').textContent=0;
   res.classList.add('dn');
   share.classList.add('dn');
