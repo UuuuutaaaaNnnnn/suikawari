@@ -274,7 +274,41 @@
   width:40px;height:66px;
 }
 
-</style></head><body><div id="g"><header><div>🍉 目隠しスイカ割り <small style="font-size:10px;opacity:.55">v7</small></div><div class="hud">ROUND <span id="r">1</span>/3　<span id="s">0</span>点</div></header><div id="stage"><div class="sun"></div><div class="bar"><div id="time"></div></div><div id="call"></div><div id="msg" class="msg"></div><div id="previewMelons"></div><div id="melon"></div><div id="hl" class="half hl"></div><div id="hr" class="half hr"></div><div id="phone"></div><div id="p"><div class="head"></div><div class="blind"></div><div class="body"></div><div class="arm a"></div><div class="arm b"></div><div class="leg a"></div><div class="leg b"></div><div id="stick"></div><div id="tear">💧💧</div></div><div id="fx"></div></div><div class="controls"><button id="hit" class="hit dn">振り下ろす！</button><button id="share" class="share dn">𝕏 で結果をシェア</button><button id="quit" class="quit dn">やめる</button><button id="retry" class="retry dn">もう一度遊ぶ</button></div>
+
+/* ===== v8 X IN-APP BROWSER SAFE LAYOUT ===== */
+:root{--x-safe-bottom:132px;}
+#g{height:100svh;}
+@media (max-width:600px){
+  body{min-height:100svh;align-items:flex-start;overflow:hidden;}
+  #g{height:calc(100svh - var(--x-safe-bottom));min-height:500px;max-height:820px;}
+  header{height:56px;padding:9px 12px;}
+  #stage{inset:56px 0 102px;}
+  .controls{min-height:102px;padding:9px 12px calc(10px + env(safe-area-inset-bottom));}
+  button{padding:12px 10px;}
+  .hit{font-size:22px;}
+  #msg{top:122px;font-size:25px;}
+  #call{top:63px;font-size:30px;}
+  #p{bottom:45px;transform:translateX(-50%) scale(.88);transform-origin:bottom center;}
+  #melon,.previewMelon{bottom:50px;width:66px;height:66px;}
+  .half{bottom:50px;}
+  #phone{bottom:45px;}
+  .bar{top:6px;}
+}
+@media (max-width:600px) and (max-height:740px){
+  :root{--x-safe-bottom:150px;}
+  #g{min-height:470px;}
+  #stage{inset:52px 0 94px;}
+  header{height:52px;font-size:14px;}
+  .hud{font-size:12px;padding:5px 8px;}
+  #msg{top:105px;font-size:22px;}
+  #call{top:54px;font-size:27px;}
+  #p{bottom:38px;transform:translateX(-50%) scale(.80);}
+  #melon,.previewMelon{bottom:42px;width:60px;height:60px;}
+  .controls{min-height:94px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));}
+  .hit{font-size:20px;padding:11px;}
+}
+
+</style></head><body><div id="g"><header><div>🍉 目隠しスイカ割り <small style="font-size:10px;opacity:.55">v8</small></div><div class="hud">ROUND <span id="r">1</span>/3　<span id="s">0</span>点</div></header><div id="stage"><div class="sun"></div><div class="bar"><div id="time"></div></div><div id="call"></div><div id="msg" class="msg"></div><div id="previewMelons"></div><div id="melon"></div><div id="hl" class="half hl"></div><div id="hr" class="half hr"></div><div id="phone"></div><div id="p"><div class="head"></div><div class="blind"></div><div class="body"></div><div class="arm a"></div><div class="arm b"></div><div class="leg a"></div><div class="leg b"></div><div id="stick"></div><div id="tear">💧💧</div></div><div id="fx"></div></div><div class="controls"><button id="hit" class="hit dn">振り下ろす！</button><button id="share" class="share dn">𝕏 で結果をシェア</button><button id="quit" class="quit dn">やめる</button><button id="retry" class="retry dn">もう一度遊ぶ</button></div>
 <div id="finalCut" class="dn">
   <div class="firebg"></div>
   <div id="vsScene" class="vsWrap">
