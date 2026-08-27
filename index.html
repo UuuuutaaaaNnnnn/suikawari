@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7d38a" />
+  <title>スイカ割りチャレンジ</title>
+  <style>
+    :root{
+      --sand:#f6d998;
+      --sea:#8fd8e8;
+      --sky:#bfefff;
+      --ink:#2a2a2a;
+      --accent:#ff6b4a;
+      --green:#279b4f;
+      --darkgreen:#166c35;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#f4e8c8;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+    body{min-height:100svh;display:flex;align-items:center;justify-content:center}
+    .game{
+      width:min(100%,520px);
+      min-height:100svh;
+      background:linear-gradient(var(--sky) 0 44%, var(--sea) 44% 55%, var(--sand) 55%);
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      box-shadow:0 0 30px #0002;
+    }
+    header{
+      padding:14px 16px 4px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      font-weight:800;
+      text-shadow:0 1px #fff8;
+    }
+    .title{font-size:22px}
+    .hud{font-size:14px;background:#ffffffb8;border:2px solid #fff;padding:6px 10px;border-radius:999px}
+    .stage{
+      flex:1;
+      position:relative;
+      min-height:520px;
+      touch-action:manipulation;
+    }
+    .sun{
+      position:absolute;right:28px;top:30px;width:66px;height:66px;border-radius:50%;
+      background:#ffd94e;box-shadow:0 0 0 8px #ffd94e44;
+    }
+    .cloud,.cloud:before,.cloud:after{
+      position:absolute;background:#fff;border-radius:999px;
+    }
+    .cloud{width:90px;height:26px;left:22px;top:36px;opacity:.92}
+    .cloud:before{content:"";width:44px;height:44px;left:12px;top:-20px}
+    .cloud:after{content:"";width:36px;height:36px;right:10px;top:-14px}
+    .goalLine{
+      position:absolute;left:5%;right:5%;bottom:138px;height:2px;background:#6c512c22;
+    }
+    .watermelon{
+      position:absolute;
+      bottom:108px;
+      width:74px;height:74px;
+      transform:translateX(-50%);
+      border-radius:50%;
+      background:
+        repeating-linear-gradient(100deg,var(--green) 0 12px,var(--darkgreen) 12px 20px);
+      border:4px solid #0c5d2a;
+      box-shadow:0 7px 0 #0002;
+      transition:left .25s ease, transform .18s ease, opacity .18s ease;
+    }
+    .watermelon:after{
+      content:"";
+      position:absolute;width:10px;height:16px;background:#4e7b23;border-radius:10px 0 10px 0;
+      left:34px;top:-12px;transform:rotate(25deg);
+    }
+    .watermelon.hit{
+      transform:translateX(-50%) scale(1.18) rotate(12deg);
+      opacity:.25;
+    }
+    .person{
+      position:absolute;
+      bottom:105px;
+      width:86px;height:190px;
+      transform:translateX(-50%);
+      transition:left .08s linear, transform .12s;
+    }
+    .head{
+      position:absolute;left:23px;top:0;width:40px;height:40px;border-radius:50%;
+      background:#f0c6a4;border:3px solid #2a2a2a;
+    }
+    .blind{
+      position:absolute;left:18px;top:13px;width:50px;height:12px;background:#222;border-radius:8px;
+      transform:rotate(-4deg);
+    }
+    .body{
+      position:absolute;left:25px;top:39px;width:36px;height:70px;background:#fff4dc;
+      border:3px solid #2a2a2a;border-radius:14px;
+    }
+    .leg{
+      position:absolute;width:12px;height:70px;background:#365a86;border:3px solid #2a2a2a;border-radius:8px;
+      top:103px;
+    }
+    .leg.l{left:27px;transform:rotate(5deg)}
+    .leg.r{left:48px;transform:rotate(-4deg)}
+    .arm{
+      position:absolute;width:12px;height:66px;background:#f0c6a4;border:3px solid #2a2a2a;border-radius:8px;
+      top:47px;transform-origin:50% 8px;
+    }
+    .arm.l{left:16px;transform:rotate(18deg)}
+    .arm.r{right:16px;transform:rotate(-18deg)}
+    .stick{
+      position:absolute;
+      width:8px;height:155px;
+      background:#8b5a2b;border:2px solid #4b2e13;border-radius:5px;
+      left:41px;top:-58px;
+      transform-origin:50% 145px;
+      transform:rotate(-18deg);
+      transition:transform .16s ease-in;
+      z-index:5;
+    }
+    .person.swing .stick{transform:rotate(70deg)}
+    .pointer{
+      position:absolute;bottom:74px;left:50%;transform:translateX(-50%);
+      width:3px;height:34px;background:#d8452f;border-radius:3px;
+    }
+    .pointer:after{
+      content:"";position:absolute;bottom:-1px;left:-7px;width:17px;height:17px;border-radius:50%;
+      border:3px solid #d8452f;background:#fff8;
+    }
+    .message{
+      position:absolute;left:50%;top:24%;transform:translateX(-50%);
+      width:88%;text-align:center;font-weight:900;font-size:28px;line-height:1.2;
+      text-shadow:0 2px #fff,0 0 8px #fff;
+      min-height:68px;
+    }
+    .sub{font-size:15px;font-weight:700;margin-top:6px}
+    .controls{
+      padding:14px max(14px, env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+      display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#fff8;backdrop-filter:blur(6px);
+      border-top:1px solid #fff9;
+    }
+    button{
+      appearance:none;border:none;border-radius:16px;padding:15px 12px;font-size:18px;font-weight:900;
+      box-shadow:0 4px 0 #0002;cursor:pointer;
+    }
+    button:active{transform:translateY(2px);box-shadow:0 2px 0 #0002}
+    .swingBtn{grid-column:1/-1;background:var(--accent);color:#fff;font-size:24px}
+    .secondary{background:#fff;color:#333;border:2px solid #ddd}
+    .share{background:#111;color:#fff}
+    .hidden{display:none!important}
+    .howto{
+      position:absolute;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:22px;z-index:50;
+    }
+    .card{
+      background:#fff;border-radius:22px;padding:22px;width:min(100%,430px);box-shadow:0 18px 60px #0005;
+      text-align:center;
+    }
+    .card h1{margin:0 0 10px;font-size:28px}
+    .card p{line-height:1.65;margin:10px 0 16px}
+    .card button{width:100%;background:var(--accent);color:white}
+    .tiny{font-size:12px;opacity:.7}
+    @media (max-height:700px){
+      .stage{min-height:430px}
+      .person{bottom:86px;transform:translateX(-50%) scale(.88);transform-origin:bottom center}
+      .watermelon{bottom:90px}
+      .goalLine{bottom:120px}
+      .pointer{bottom:60px}
+      .message{top:18%;font-size:24px}
+    }
+  </style>
+</head>
+<body>
+<div class="game">
+  <header>
+    <div class="title">🍉 スイカ割り</div>
+    <div class="hud">SCORE <span id="score">0</span> / 3回</div>
+  </header>
+
+  <div class="stage" id="stage">
+    <div class="sun"></div>
+    <div class="cloud"></div>
+    <div class="goalLine"></div>
+
+    <div class="message" id="message">
+      目隠し中……
+      <div class="sub">タイミングを見て「振る！」</div>
+    </div>
+
+    <div class="watermelon" id="watermelon"></div>
+
+    <div class="person" id="person">
+      <div class="head"></div>
+      <div class="blind"></div>
+      <div class="body"></div>
+      <div class="arm l"></div>
+      <div class="arm r"></div>
+      <div class="leg l"></div>
+      <div class="leg r"></div>
+      <div class="stick"></div>
+    </div>
+    <div class="pointer"></div>
+  </div>
+
+  <div class="controls">
+    <button class="swingBtn" id="swingBtn">振る！</button>
+    <button class="secondary hidden" id="retryBtn">もう一回</button>
+    <button class="share hidden" id="shareBtn">Xでシェア</button>
+  </div>
+
+  <div class="howto" id="howto">
+    <div class="card">
+      <h1>🍉 スイカ割りチャレンジ</h1>
+      <p>
+        目隠ししたキャラが左右にフラフラ動きます。<br>
+        <b>スイカの真上に来たと思った瞬間に「振る！」</b><br>
+        3回の合計点を競おう！
+      </p>
+      <button id="startBtn">ゲームスタート</button>
+      <div class="tiny">スマホ・PC対応 / サーバー不要</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const stage = document.getElementById('stage');
+  const person = document.getElementById('person');
+  const melon = document.getElementById('watermelon');
+  const swingBtn = document.getElementById('swingBtn');
+  const retryBtn = document.getElementById('retryBtn');
+  const shareBtn = document.getElementById('shareBtn');
+  const scoreEl = document.getElementById('score');
+  const msg = document.getElementById('message');
+  const howto = document.getElementById('howto');
+  const startBtn = document.getElementById('startBtn');
+
+  let x = 20;
+  let dir = 1;
+  let speed = 0.35;
+  let melonX = 70;
+  let running = false;
+  let swinging = false;
+  let tries = 0;
+  let total = 0;
+  let raf = 0;
+  let last = performance.now();
+
+  function randomMelon(){
+    melonX = 18 + Math.random() * 64;
+    melon.style.left = melonX + '%';
+    melon.classList.remove('hit');
+  }
+
+  function resetRound(){
+    x = 12 + Math.random() * 24;
+    dir = Math.random() > .5 ? 1 : -1;
+    speed = 0.24 + Math.random() * 0.18;
+    person.style.left = x + '%';
+    randomMelon();
+    swinging = false;
+    running = true;
+    swingBtn.disabled = false;
+    msg.innerHTML = '目隠し中……<div class="sub">タイミングを見て「振る！」</div>';
+    last = performance.now();
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(loop);
+  }
+
+  function loop(now){
+    if(!running) return;
+    const dt = Math.min(32, now - last);
+    last = now;
+
+    x += dir * speed * dt * 0.12;
+    if(x > 91){ x = 91; dir = -1; }
+    if(x < 9){ x = 9; dir = 1; }
+
+    // ふらつき感
+    const wobble = Math.sin(now / 220) * 0.8;
+    person.style.left = (x + wobble) + '%';
+
+    raf = requestAnimationFrame(loop);
+  }
+
+  function evaluate(){
+    const d = Math.abs(x - melonX);
+    let pts = 0;
+    let title = '';
+    let sub = '';
+
+    if(d <= 3.2){
+      pts = 1000;
+      title = '💥 真っ二つ！！';
+      sub = 'PERFECT +1000';
+      melon.classList.add('hit');
+      if(navigator.vibrate) navigator.vibrate([70,40,120]);
+    }else if(d <= 7){
+      pts = 600;
+      title = '🍉 命中！';
+      sub = 'GOOD +600';
+      melon.classList.add('hit');
+      if(navigator.vibrate) navigator.vibrate(80);
+    }else if(d <= 12){
+      pts = 250;
+      title = '😆 惜しい！';
+      sub = 'NEAR +250';
+    }else{
+      pts = 0;
+      title = '💨 空振り！';
+      sub = 'MISS +0';
+    }
+
+    tries++;
+    total += pts;
+    scoreEl.textContent = total;
+    msg.innerHTML = `${title}<div class="sub">${sub}</div>`;
+
+    setTimeout(() => {
+      if(tries >= 3){
+        finish();
+      }else{
+        resetRound();
+      }
+    }, 950);
+  }
+
+  function swing(){
+    if(!running || swinging) return;
+    swinging = true;
+    running = false;
+    swingBtn.disabled = true;
+    cancelAnimationFrame(raf);
+
+    person.classList.add('swing');
+    setTimeout(() => {
+      evaluate();
+      setTimeout(() => person.classList.remove('swing'), 220);
+    }, 150);
+  }
+
+  function finish(){
+    running = false;
+    swingBtn.classList.add('hidden');
+    retryBtn.classList.remove('hidden');
+    shareBtn.classList.remove('hidden');
+
+    let rank = 'まだまだ！';
+    if(total >= 2600) rank = 'スイカ割り名人！';
+    else if(total >= 1800) rank = 'かなり上手！';
+    else if(total >= 900) rank = 'いい感じ！';
+
+    msg.innerHTML = `🏁 ${rank}<div class="sub">合計 ${total} 点 / 3000点</div>`;
+  }
+
+  function startGame(){
+    tries = 0;
+    total = 0;
+    scoreEl.textContent = '0';
+    swingBtn.classList.remove('hidden');
+    retryBtn.classList.add('hidden');
+    shareBtn.classList.add('hidden');
+    howto.classList.add('hidden');
+    resetRound();
+  }
+
+  function share(){
+    const text = `スイカ割りチャレンジで ${total} 点！🍉\nあなたは何点取れる？`;
+    const url = location.href.startsWith('http') ? location.href : '';
+    const intent = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) +
+                   (url ? '&url=' + encodeURIComponent(url) : '');
+    window.open(intent, '_blank', 'noopener,noreferrer');
+  }
+
+  startBtn.addEventListener('click', startGame);
+  swingBtn.addEventListener('click', swing);
+  retryBtn.addEventListener('click', startGame);
+  shareBtn.addEventListener('click', share);
+
+  // キーボード操作
+  window.addEventListener('keydown', (e) => {
+    if(e.code === 'Space'){
+      e.preventDefault();
+      swing();
+    }
+  });
+
+  // 初期配置
+  person.style.left = x + '%';
+  randomMelon();
+})();
+</script>
+</body>
+</html>
