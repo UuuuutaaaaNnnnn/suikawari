@@ -308,7 +308,16 @@
   .hit{font-size:20px;padding:11px;}
 }
 
-</style></head><body><div id="g"><header><div>🍉 目隠しスイカ割り <small style="font-size:10px;opacity:.55">v9</small></div><div class="hud">ROUND <span id="r">1</span>/3　<span id="s">0</span>点</div></header><div id="stage"><div class="sun"></div><div class="bar"><div id="time"></div></div><div id="call"></div><div id="msg" class="msg"></div><div id="previewMelons"></div><div id="melon"></div><div id="hl" class="half hl"></div><div id="hr" class="half hr"></div><div id="phone"></div><div id="p"><div class="head"></div><div class="blind"></div><div class="body"></div><div class="arm a"></div><div class="arm b"></div><div class="leg a"></div><div class="leg b"></div><div id="stick"></div><div id="tear">💧💧</div></div><div id="fx"></div></div><div class="controls"><button id="hit" class="hit dn">振り下ろす！</button><button id="share" class="share dn">結果をシェア</button><button id="quit" class="quit dn">やめる</button><button id="retry" class="retry dn">もう一度遊ぶ</button></div>
+
+/* ===== v10 NO SHARE MODE ===== */
+.controls{
+  grid-template-columns:1fr;
+}
+.quit,.retry,.hit{
+  grid-column:1/-1;
+}
+
+</style></head><body><div id="g"><header><div>🍉 目隠しスイカ割り <small style="font-size:10px;opacity:.55">v10</small></div><div class="hud">ROUND <span id="r">1</span>/3　<span id="s">0</span>点</div></header><div id="stage"><div class="sun"></div><div class="bar"><div id="time"></div></div><div id="call"></div><div id="msg" class="msg"></div><div id="previewMelons"></div><div id="melon"></div><div id="hl" class="half hl"></div><div id="hr" class="half hr"></div><div id="phone"></div><div id="p"><div class="head"></div><div class="blind"></div><div class="body"></div><div class="arm a"></div><div class="arm b"></div><div class="leg a"></div><div class="leg b"></div><div id="stick"></div><div id="tear">💧💧</div></div><div id="fx"></div></div><div class="controls"><button id="hit" class="hit dn">振り下ろす！</button><button id="quit" class="quit dn">やめる</button><button id="retry" class="retry dn">もう一度遊ぶ</button></div>
 <div id="finalCut" class="dn">
   <div class="firebg"></div>
   <div id="vsScene" class="vsWrap">
@@ -330,7 +339,7 @@
 (()=>{
 const $=x=>document.getElementById(x),
 p=$('p'),m=$('melon'),preview=$('previewMelons'),msg=$('msg'),call=$('call'),
-time=$('time'),hit=$('hit'),share=$('share'),quit=$('quit'),retry=$('retry'),
+time=$('time'),hit=$('hit'),quit=$('quit'),retry=$('retry'),
 res=$('result'),phone=$('phone'),hl=$('hl'),hr=$('hr'),fx=$('fx');
 
 let px=8,mx=70,dir=1,speed=.24,round=1,total=0,streak=0,successes=0,run=0,busy=0,
@@ -622,7 +631,7 @@ function finalStrikeCinematic(done){
         impact=$('impact'),
         black=$('blackout');
 
-  share.classList.add('dn');
+  
   quit.classList.add('dn');
 
   // ① スロー振り下ろし
@@ -741,7 +750,7 @@ function disaster(){
 
 function finish(){
   hit.classList.add('dn');
-  share.classList.remove('dn');
+  
   quit.classList.remove('dn');
 
   const title=
@@ -755,7 +764,7 @@ function finish(){
   $('rx').textContent=
     streak>=3
       ?'3連続失敗。最後はスマホまで犠牲に……。'
-      :'3ラウンド終了！あなたも挑戦してみよう。';
+      :'3ラウンド終了！';
 
   res.classList.remove('dn');
 }
@@ -767,7 +776,7 @@ function restart(){
   successes=0;
   $('s').textContent=0;
   res.classList.add('dn');
-  share.classList.add('dn');
+  
   quit.classList.add('dn');
   retry.classList.add('dn');
   begin();
@@ -788,46 +797,13 @@ quit.onclick=()=>{
   clearTimeout(ct);
   clearTimeout(speedTimer);
   res.classList.add('dn');
-  share.classList.add('dn');
+  
   quit.classList.add('dn');
   retry.classList.remove('dn');
-  msg.innerHTML='また挑戦してね 🍉<small>シェアしなくてもOK！</small>';
+  msg.innerHTML='また挑戦してね 🍉<small>遊んでくれてありがとう！</small>';
 };
 
-share.onclick=async()=>{
-  const text=`目隠しスイカ割りで ${total}点！🍉
-あなたも挑戦！`;
-  const u=location.href.startsWith('http')?location.href.split('#')[0]:'';
 
-  // iPhone / Android: OSの共有シートを優先。
-  // ここからXアプリを選べば、Web版Xへの再ログインを避けやすい。
-  if(navigator.share){
-    try{
-      await navigator.share({
-        title:'目隠しスイカ割り',
-        text:text,
-        url:u
-      });
-      return;
-    }catch(err){
-      // ユーザーが共有シートを閉じた場合は何もしない
-      if(err && err.name==='AbortError') return;
-    }
-  }
-
-  // Web Share APIが使えない環境では、
-  // 投稿文＋URLをクリップボードへコピーして手動投稿できるようにする。
-  const fallbackText = text + (u ? `
-${u}` : '');
-
-  try{
-    await navigator.clipboard.writeText(fallbackText);
-    alert('結果をコピーしました。Xの投稿画面に貼り付けてください。');
-  }catch(e){
-    // 最終フォールバック：選択可能なダイアログ
-    window.prompt('この文章をコピーしてXに投稿してください。', fallbackText);
-  }
-};
 
 window.onkeydown=e=>{
   if(e.code==='Space'){
@@ -841,13 +817,6 @@ p.style.left=px+'%';
 })();
 </script>
 
-<script>
-document.addEventListener('DOMContentLoaded',()=>{
-  const btn=document.getElementById('share');
-  if(btn){
-    btn.title='共有先でXを選んでください';
-  }
-});
-</script>
+
 
 </body></html>
