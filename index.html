@@ -317,7 +317,7 @@
   grid-column:1/-1;
 }
 
-</style></head><body><div id="g"><header><div>🍉 目隠しスイカ割り <small style="font-size:10px;opacity:.55">v10</small></div><div class="hud">ROUND <span id="r">1</span>/3　<span id="s">0</span>点</div></header><div id="stage"><div class="sun"></div><div class="bar"><div id="time"></div></div><div id="call"></div><div id="msg" class="msg"></div><div id="previewMelons"></div><div id="melon"></div><div id="hl" class="half hl"></div><div id="hr" class="half hr"></div><div id="phone"></div><div id="p"><div class="head"></div><div class="blind"></div><div class="body"></div><div class="arm a"></div><div class="arm b"></div><div class="leg a"></div><div class="leg b"></div><div id="stick"></div><div id="tear">💧💧</div></div><div id="fx"></div></div><div class="controls"><button id="hit" class="hit dn">振り下ろす！</button><button id="quit" class="quit dn">やめる</button><button id="retry" class="retry dn">もう一度遊ぶ</button></div>
+</style></head><body><div id="g"><header><div>🍉 目隠しスイカ割り <small style="font-size:10px;opacity:.55">v11</small></div><div class="hud">ROUND <span id="r">1</span>/3　<span id="s">0</span>点</div></header><div id="stage"><div class="sun"></div><div class="bar"><div id="time"></div></div><div id="call"></div><div id="msg" class="msg"></div><div id="previewMelons"></div><div id="melon"></div><div id="hl" class="half hl"></div><div id="hr" class="half hr"></div><div id="phone"></div><div id="p"><div class="head"></div><div class="blind"></div><div class="body"></div><div class="arm a"></div><div class="arm b"></div><div class="leg a"></div><div class="leg b"></div><div id="stick"></div><div id="tear">💧💧</div></div><div id="fx"></div></div><div class="controls"><button id="hit" class="hit dn">振り下ろす！</button><button id="quit" class="quit dn">やめる</button><button id="retry" class="retry dn">もう一度遊ぶ</button></div>
 <div id="finalCut" class="dn">
   <div class="firebg"></div>
   <div id="vsScene" class="vsWrap">
@@ -333,7 +333,7 @@
   <div id="impact" class="impact">バキィ!!</div>
   <div id="blackout" class="blackout"></div>
 </div>
-<div id="intro" class="ov"><div class="card"><h1>🍉 目隠しスイカ割り</h1><p>最初に<b>3〜4個のスイカ候補</b>が出ます。<br>ゲームが始まると全部消えます。<br><b>「右！」「左！」</b>の掛け声だけを頼りに、本物の位置を当てろ！</p><p>3ラウンド・約15秒勝負<br><small>3ラウンド目は特別カットイン！</small></p><button id="start">挑戦する</button></div></div><div id="result" class="ov dn"><div class="card"><h1 id="rt"></h1><div id="rs"></div><p id="rx"></p><button id="close">閉じる</button></div></div></div>
+<div id="intro" class="ov"><div class="card"><h1>🍉 目隠しスイカ割り</h1><p>最初に<b>3〜4個のスイカ候補</b>が出ます。<br>ゲームが始まると全部消えます。<br><b>「右！」「左！」</b>の掛け声だけを頼りに、本物の位置を当てろ！</p><p>1ラウンド45秒・全3ラウンド<br><small>3ラウンド目は特別カットイン！</small></p><button id="start">挑戦する</button></div></div><div id="result" class="ov dn"><div class="card"><h1 id="rt"></h1><div id="rs"></div><p id="rx"></p><button id="close">閉じる</button></div></div></div>
 
 <script>
 (()=>{
@@ -344,7 +344,7 @@ res=$('result'),phone=$('phone'),hl=$('hl'),hr=$('hr'),fx=$('fx');
 
 let px=8,mx=70,dir=1,speed=.24,round=1,total=0,streak=0,successes=0,run=0,busy=0,
 t0=0,last=0,raf,ct,speedTimer;
-const dur=5000;
+const dur=45000;
 const R=(a,b)=>a+Math.random()*(b-a);
 
 function clean(){
